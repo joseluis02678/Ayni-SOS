@@ -1,0 +1,3 @@
+# Offline MBTiles for El Niño risk zones go here.
+# Generate with: infra/scripts/generate_mbtiles.sh
+# Place peru_risk_elnino.mbtiles for MapLibre offline mode.

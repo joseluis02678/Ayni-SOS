@@ -1,0 +1,9 @@
+# Minimal pubspec for melos workspace root (optional tooling)
+name: ayni_sos_workspace
+publish_to: none
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dev_dependencies:
+  melos: ^6.2.0

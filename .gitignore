@@ -1,0 +1,43 @@
+# Ayni SOS gitignore
+
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/.pub-cache/
+**/pubspec.lock
+**/ios/Pods/
+**/android/.gradle/
+**/android/local.properties
+**/*.iml
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+dist/
+
+# Env / secrets
+.env.local
+**/*.pem
+**/credentials.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Models (large)
+**/models/*.gguf
+**/models/*gemma*
+*.mbtiles
+
+# Cursor
+.cursor/

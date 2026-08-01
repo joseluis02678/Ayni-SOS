@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Ayni SOS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0F1419;
+      --surface: #1A2332;
+      --elevated: #243044;
+      --primary: #C0392B;
+      --secondary: #2E86AB;
+      --text: #F4F6F8;
+      --muted: #A8B3C0;
+      --success: #27AE60;
+      --warning: #E67E22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(192,57,43,.25), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(46,134,171,.2), transparent),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .shell {
+      max-width: 420px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid rgba(255,255,255,.04);
+      border-right: 1px solid rgba(255,255,255,.04);
+      background: rgba(15,20,25,.65);
+      backdrop-filter: blur(8px);
+    }
+    header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: var(--surface);
+    }
+    .brand {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.5rem;
+      letter-spacing: .02em;
+    }
+    .role-toggle {
+      display: flex;
+      gap: 4px;
+      background: var(--elevated);
+      border-radius: 999px;
+      padding: 3px;
+    }
+    .role-toggle button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font: inherit;
+      font-size: .75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .role-toggle button.active {
+      background: var(--primary);
+      color: white;
+    }
+    main { flex: 1; padding: 24px 20px; overflow-y: auto; }
+    .screen { display: none; animation: fade .25s ease; }
+    .screen.active { display: block; }
+    @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    h1 { font-size: 1.75rem; margin-bottom: 8px; }
+    h2 { font-size: 1.15rem; margin-bottom: 12px; }
+    p.lead { color: var(--muted); margin-bottom: 28px; line-height: 1.45; }
+    label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 6px; }
+    input, select, textarea {
+      width: 100%;
+      background: var(--elevated);
+      border: 1px solid transparent;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font: inherit;
+      margin-bottom: 14px;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+    }
+    .btn {
+      width: 100%;
+      border: 0;
+      border-radius: 14px;
+      padding: 16px;
+      font: inherit;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 56px;
+      transition: transform .1s, opacity .15s;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 2px solid var(--secondary);
+      margin-top: 10px;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .hero-icon {
+      width: 96px; height: 96px;
+      margin: 40px auto 24px;
+      border-radius: 50%;
+      background: rgba(192,57,43,.15);
+      display: grid; place-items: center;
+      font-size: 2.5rem;
+    }
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 24px 0 32px;
+    }
+    .evidence-card {
+      background: var(--surface);
+      border: 2px solid var(--elevated);
+      border-radius: 20px;
+      padding: 28px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+    }
+    .evidence-card.selected {
+      border-color: var(--secondary);
+      background: rgba(46,134,171,.2);
+    }
+    .evidence-card .ico { font-size: 2.5rem; margin-bottom: 10px; }
+    .chip {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: .8rem;
+      font-weight: 600;
+      border: 1px solid;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    .chip-status { color: var(--secondary); border-color: var(--secondary); background: rgba(46,134,171,.15); }
+    .chip-p1 { color: #C0392B; border-color: #C0392B; background: rgba(192,57,43,.15); }
+    .chip-p2 { color: #E67E22; border-color: #E67E22; background: rgba(230,126,34,.15); }
+    .chip-p3 { color: #F1C40F; border-color: #F1C40F; background: rgba(241,196,15,.12); }
+    .card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .card:hover { border-color: var(--elevated); }
+    .card .meta { color: var(--muted); font-size: .85rem; margin-top: 6px; }
+    .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      display: inline-block; margin-right: 8px;
+    }
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--elevated); color: var(--text);
+      padding: 12px 18px; border-radius: 12px;
+      font-size: .9rem; z-index: 50;
+      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      display: none; max-width: 90%;
+    }
+    .toast.show { display: block; animation: fade .2s ease; }
+    .status-line { color: var(--muted); font-size: .9rem; margin: 12px 0; text-align: center; min-height: 1.2em; }
+    .api-bar {
+      font-size: .7rem; color: var(--muted);
+      padding: 8px 20px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      display: flex; justify-content: space-between; gap: 8px;
+    }
+    .api-bar .ok { color: var(--success); }
+    .api-bar .bad { color: var(--primary); }
+    .map-placeholder {
+      height: 220px;
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, #1a2a3a 0%, #0f1a24 50%, #1e3344 100%);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 1px solid var(--elevated);
+    }
+    .map-placeholder::after {
+      content: "Mapa · Lima (simulado)";
+      position: absolute; bottom: 10px; left: 12px;
+      font-size: .75rem; color: var(--muted);
+    }
+    .marker {
+      position: absolute;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid white;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 4px rgba(192,57,43,.25);
+    }
+    .detail-block { margin: 16px 0; }
+    .detail-block dt { color: var(--muted); font-size: .8rem; margin-top: 10px; }
+    .detail-block dd { margin-top: 2px; }
+    .spacer { height: 24px; }
+    .center { text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">Ayni SOS</div>
+      <div class="role-toggle">
+        <button id="btnRoleCitizen" class="active" type="button">Ciudadano</button>
+        <button id="btnRoleRescuer" type="button">Rescatista</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- AUTH -->
+      <section id="screen-auth" class="screen active">
+        <h1>Bienvenido</h1>
+        <p class="lead">Ayuda en emergencias por huaicos e inundaciones. Conectado a la API local.</p>
+        <label>Correo</label>
+        <input id="email" type="email" value="demo@example.com" autocomplete="username" />
+        <label>Contraseña</label>
+        <input id="password" type="password" value="demo12345" autocomplete="current-password" />
+        <label>Nombre (solo registro)</label>
+        <input id="fullName" type="text" value="Usuario Demo" />
+        <button class="btn btn-primary" id="btnLogin" type="button">Iniciar sesión</button>
+        <button class="btn btn-secondary" id="btnRegister" type="button">Crear cuenta</button>
+        <p class="status-line" id="authStatus"></p>
+      </section>
+
+      <!-- CITIZEN HOME -->
+      <section id="screen-citizen-home" class="screen">
+        <div class="hero-icon">🆘</div>
+        <h1 class="center">¿Necesitas ayuda?</h1>
+        <p class="lead center">Envía una evidencia (audio o foto) con tu ubicación. La IA analizará el reporte.</p>
+        <button class="btn btn-primary" id="btnAskHelp" type="button">Pedir ayuda</button>
+        <button class="btn btn-secondary" id="btnHistory" type="button">Ver mis solicitudes</button>
+        <button class="btn btn-ghost" id="btnLogout1" type="button">Salir</button>
+      </section>
+
+      <!-- NEW REPORT -->
+      <section id="screen-new-report" class="screen">
+        <h2>Nueva solicitud</h2>
+        <p class="lead">Elige UNA evidencia. Tu GPS se compartirá automáticamente.</p>
+        <div class="evidence-grid">
+          <div class="evidence-card" data-type="audio" id="cardAudio">
+            <div class="ico">🎤</div>
+            <div>Audio</div>
+          </div>
+          <div class="evidence-card" data-type="photo" id="cardPhoto">
+            <div class="ico">📷</div>
+            <div>Fotografía</div>
+          </div>
+        </div>
+        <p class="status-line" id="reportStatus"></p>
+        <button class="btn btn-primary" id="btnSubmitReport" type="button">Enviar solicitud</button>
+        <button class="btn btn-ghost" id="btnBackHome" type="button">Volver</button>
+      </section>
+
+      <!-- REPORT STATUS -->
+      <section id="screen-report-status" class="screen">
+        <h2>Estado de solicitud</h2>
+        <div id="reportDetail"></div>
+        <div class="spacer"></div>
+        <button class="btn btn-primary" id="btnRefreshReport" type="button">Actualizar</button>
+        <button class="btn btn-ghost" id="btnBackHome2" type="button">Inicio</button>
+      </section>
+
+      <!-- HISTORY -->
+      <section id="screen-history" class="screen">
+        <h2>Historial</h2>
+        <div id="historyList"></div>
+        <button class="btn btn-ghost" id="btnBackHome3" type="button">Inicio</button>
+      </section>
+
+      <!-- RESCUER DASHBOARD -->
+      <section id="screen-rescuer" class="screen">
+        <h2>Dashboard rescatista</h2>
+        <div class="map-placeholder" id="mapBox"></div>
+        <div id="incidentList"></div>
+        <button class="btn btn-secondary" id="btnRefreshIncidents" type="button">Actualizar mapa</button>
+        <button class="btn btn-ghost" id="btnLogout2" type="button">Salir</button>
+      </section>
+
+      <!-- INCIDENT DETAIL -->
+      <section id="screen-incident" class="screen">
+        <h2>Detalle del incidente</h2>
+        <div id="incidentDetail"></div>
+        <div class="spacer"></div>
+        <button class="btn btn-primary" id="btnAccept" type="button">Aceptar atender</button>
+        <button class="btn btn-secondary" id="btnInProgress" type="button">Marcar en progreso</button>
+        <button class="btn btn-secondary" id="btnResolved" type="button">Rescate finalizado</button>
+        <button class="btn btn-ghost" id="btnBackRescuer" type="button">Volver al mapa</button>
+      </section>
+    </main>
+
+    <div class="api-bar">
+      <span id="apiHealth">API…</span>
+      <span id="sessionInfo">Sin sesión</span>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Use same host as the page so phone testing works over LAN
+    const API = `${location.protocol}//${location.hostname}:8000`;
+    const state = {
+      role: "citizen",
+      token: null,
+      userId: null,
+      name: null,
+      evidenceType: null,
+      currentReportId: null,
+      currentIncidentId: null,
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    function show(id) {
+      document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+      $(id).classList.add("active");
+    }
+
+    function toast(msg) {
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2800);
+    }
+
+    function statusLabel(s) {
+      const map = {
+        draft: "Borrador", analyzing: "Analizando", pending_sync: "Pendiente de envío",
+        queued: "En cola", received: "Recibido", assigned: "Asignado",
+        in_progress: "En progreso", resolved: "Resuelto", cancelled: "Cancelado",
+      };
+      return map[s] || s;
+    }
+
+    function priorityChip(p) {
+      const cls = p <= 1 ? "chip-p1" : p === 2 ? "chip-p2" : "chip-p3";
+      const label = p <= 1 ? "Crítica" : p === 2 ? "Alta" : "Media";
+      return `<span class="chip ${cls}">${label} (P${p})</span>`;
+    }
+
+    async function api(path, opts = {}) {
+      const headers = { ...(opts.headers || {}) };
+      if (opts.json) {
+        headers["Content-Type"] = "application/json";
+        opts.body = JSON.stringify(opts.json);
+      }
+      if (state.token) headers["Authorization"] = `Bearer ${state.token}`;
+      const res = await fetch(`${API}${path}`, { ...opts, headers });
+      const text = await res.text();
+      let data = null;
+      try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+      if (!res.ok) {
+        const detail = data?.detail ? JSON.stringify(data.detail) : text;
+        throw new Error(detail || res.statusText);
+      }
+      return data;
+    }
+
+    async function checkHealth() {
+      try {
+        const h = await api("/health");
+        $("apiHealth").innerHTML = `<span class="ok">● API ${h.version}</span>`;
+      } catch {
+        $("apiHealth").innerHTML = `<span class="bad">● API offline</span>`;
+      }
+    }
+
+    function setSession(data) {
+      state.token = data.access_token;
+      state.userId = data.user_id;
+      state.name = data.full_name;
+      state.role = data.role === "rescuer" || data.role === "admin" ? "rescuer" : "citizen";
+      $("sessionInfo").textContent = state.name || "Sesión";
+      syncRoleButtons();
+      if (state.role === "rescuer") {
+        show("screen-rescuer");
+        loadIncidents();
+      } else {
+        show("screen-citizen-home");
+      }
+    }
+
+    function syncRoleButtons() {
+      $("btnRoleCitizen").classList.toggle("active", state.role === "citizen");
+      $("btnRoleRescuer").classList.toggle("active", state.role === "rescuer");
+    }
+
+    function logout() {
+      state.token = null;
+      state.userId = null;
+      $("sessionInfo").textContent = "Sin sesión";
+      show("screen-auth");
+    }
+
+    // Auth
+    $("btnLogin").onclick = async () => {
+      $("authStatus").textContent = "Entrando…";
+      try {
+        const data = await api("/api/v1/auth/login", {
+          method: "POST",
+          json: { email: $("email").value.trim(), password: $("password").value },
+        });
+        setSession(data);
+        toast("Sesión iniciada");
+      } catch (e) {
+        $("authStatus").textContent = "Error: " + e.message;
+      }
+    };
+
+    $("btnRegister").onclick = async () => {
+      $("authStatus").textContent = "Registrando…";
+      const role = $("btnRoleRescuer").classList.contains("active") ? "rescuer" : "citizen";
+      try {
+        const data = await api("/api/v1/auth/register", {
+          method: "POST",
+          json: {
+            email: $("email").value.trim(),
+            password: $("password").value,
+            full_name: $("fullName").value.trim() || "Usuario Demo",
+            role,
+          },
+        });
+        setSession(data);
+        toast("Cuenta creada");
+      } catch (e) {
+        $("authStatus").textContent = "Error: " + e.message;
+      }
+    };
+
+    $("btnRoleCitizen").onclick = () => {
+      state.role = "citizen";
+      syncRoleButtons();
+    };
+    $("btnRoleRescuer").onclick = () => {
+      state.role = "rescuer";
+      syncRoleButtons();
+    };
+
+    $("btnAskHelp").onclick = () => {
+      state.evidenceType = null;
+      document.querySelectorAll(".evidence-card").forEach((c) => c.classList.remove("selected"));
+      $("reportStatus").textContent = "";
+      show("screen-new-report");
+    };
+    $("btnHistory").onclick = () => { loadHistory(); show("screen-history"); };
+    $("btnBackHome").onclick = $("btnBackHome2").onclick = $("btnBackHome3").onclick = () => show("screen-citizen-home");
+    $("btnLogout1").onclick = $("btnLogout2").onclick = logout;
+    $("btnBackRescuer").onclick = () => { show("screen-rescuer"); loadIncidents(); };
+
+    document.querySelectorAll(".evidence-card").forEach((card) => {
+      card.onclick = () => {
+        document.querySelectorAll(".evidence-card").forEach((c) => c.classList.remove("selected"));
+        card.classList.add("selected");
+        state.evidenceType = card.dataset.type;
+        $("reportStatus").textContent = state.evidenceType === "audio" ? "Audio listo (simulado)" : "Foto lista (simulada)";
+      };
+    });
+
+    $("btnSubmitReport").onclick = async () => {
+      if (!state.evidenceType) {
+        $("reportStatus").textContent = "Selecciona audio o fotografía";
+        return;
+      }
+      $("reportStatus").textContent = "Obteniendo ubicación…";
+      let lat = -12.0464, lon = -77.0428;
+      try {
+        const pos = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+        });
+        lat = pos.coords.latitude;
+        lon = pos.coords.longitude;
+      } catch {
+        $("reportStatus").textContent = "GPS simulado (Lima)…";
+      }
+
+      $("reportStatus").textContent = "Analizando con IA local (heurística)…";
+      await new Promise((r) => setTimeout(r, 600));
+
+      const clientId = crypto.randomUUID();
+      const hash = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+        .map((b) => b.toString(16).padStart(2, "0")).join("");
+
+      const isAudio = state.evidenceType === "audio";
+      const ai = {
+        evidence_type: state.evidenceType,
+        disaster_type: "landslide",
+        transcription: isAudio ? "Se reporta huaico cerca de viviendas con personas afectadas." : null,
+        visual_analysis: isAudio ? null : {
+          people_visible: 3, water_level: "high", mud_present: true,
+          landslide_visible: true, damaged_homes: 2, vehicles_affected: 1,
+          obstacles: ["debris", "mud"],
+        },
+        estimated_people: 5,
+        risk_level: "high",
+        suggested_resources: ["shovel_team", "ambulance"],
+        priority: 2,
+        summary: isAudio
+          ? "Audio analizado: posible huaico. Recomendación solo."
+          : "Foto analizada: lodo/agua y viviendas. Recomendación solo.",
+        confidence: 0.62,
+        ai_disclaimer: "recommendation_only",
+      };
+
+      $("reportStatus").textContent = "Enviando al servidor…";
+      try {
+        const report = await api("/api/v1/reports", {
+          method: "POST",
+          json: {
+            client_report_id: clientId,
+            evidence_type: state.evidenceType,
+            latitude: lat,
+            longitude: lon,
+            accuracy_meters: 15,
+            evidence_hash: hash,
+            disaster_type: "landslide",
+            priority: 2,
+            summary: ai.summary,
+            sync_channel: "http",
+            ai_analysis: ai,
+          },
+        });
+        state.currentReportId = report.id;
+        renderReport(report);
+        show("screen-report-status");
+        toast("Solicitud enviada");
+      } catch (e) {
+        $("reportStatus").textContent = "Error: " + e.message;
+      }
+    };
+
+    function renderReport(r) {
+      const ai = r.ai_analysis;
+      $("reportDetail").innerHTML = `
+        <span class="chip chip-status">${statusLabel(r.status)}</span>
+        ${priorityChip(r.priority)}
+        <div class="detail-block">
+          <dt>Resumen</dt><dd>${r.summary || "—"}</dd>
+          <dt>Ubicación</dt><dd>${r.latitude.toFixed(5)}, ${r.longitude.toFixed(5)}</dd>
+          <dt>Canal</dt><dd>${r.sync_channel || "—"}</dd>
+          ${ai ? `
+            <dt>Análisis IA (recomendación)</dt>
+            <dd>Riesgo: <strong>${ai.risk_level}</strong> · Personas: ${ai.estimated_people}</dd>
+            <dd>Recursos: ${ai.suggested_resources.join(", ")}</dd>
+            <dd style="color:var(--warning);font-style:italic;margin-top:8px">${ai.ai_disclaimer}</dd>
+          ` : ""}
+        </div>
+      `;
+    }
+
+    $("btnRefreshReport").onclick = async () => {
+      if (!state.currentReportId) return;
+      try {
+        const r = await api(`/api/v1/reports/${state.currentReportId}`);
+        renderReport(r);
+        toast("Actualizado");
+      } catch (e) { toast(e.message); }
+    };
+
+    async function loadHistory() {
+      const list = await api("/api/v1/reports/mine");
+      if (!list.length) {
+        $("historyList").innerHTML = `<p class="lead">Aún no tienes solicitudes</p>`;
+        return;
+      }
+      $("historyList").innerHTML = list.map((r) => `
+        <div class="card" data-id="${r.id}">
+          <div><span class="dot" style="background:${r.priority<=1?'#C0392B':r.priority===2?'#E67E22':'#F1C40F'}"></span>${r.summary || "Solicitud"}</div>
+          <div class="meta">${statusLabel(r.status)} · P${r.priority}</div>
+        </div>
+      `).join("");
+      $("historyList").querySelectorAll(".card").forEach((c) => {
+        c.onclick = async () => {
+          state.currentReportId = c.dataset.id;
+          const r = await api(`/api/v1/reports/${state.currentReportId}`);
+          renderReport(r);
+          show("screen-report-status");
+        };
+      });
+    }
+
+    async function loadIncidents() {
+      try {
+        const list = await api("/api/v1/incidents");
+        const box = $("mapBox");
+        box.querySelectorAll(".marker").forEach((m) => m.remove());
+        list.slice(0, 12).forEach((r, i) => {
+          const m = document.createElement("div");
+          m.className = "marker";
+          m.style.background = r.priority <= 1 ? "#C0392B" : r.priority === 2 ? "#E67E22" : "#F1C40F";
+          m.style.left = `${20 + (i % 5) * 15 + Math.random() * 8}%`;
+          m.style.top = `${25 + Math.floor(i / 5) * 22 + Math.random() * 10}%`;
+          m.title = `P${r.priority}`;
+          box.appendChild(m);
+        });
+        $("incidentList").innerHTML = list.length
+          ? list.map((r) => `
+            <div class="card" data-id="${r.id}">
+              <div><span class="dot" style="background:${r.priority<=1?'#C0392B':r.priority===2?'#E67E22':'#F1C40F'}"></span>${r.summary || "Incidente"}</div>
+              <div class="meta">${statusLabel(r.status)} · P${r.priority} · ${r.assignee_count} rescatistas</div>
+            </div>`).join("")
+          : `<p class="lead">Sin incidentes</p>`;
+        $("incidentList").querySelectorAll(".card").forEach((c) => {
+          c.onclick = () => openIncident(c.dataset.id);
+        });
+      } catch (e) {
+        $("incidentList").innerHTML = `<p class="lead">Error: ${e.message}</p>`;
+      }
+    }
+
+    $("btnRefreshIncidents").onclick = loadIncidents;
+
+    async function openIncident(id) {
+      state.currentIncidentId = id;
+      const r = await api(`/api/v1/incidents/${id}`);
+      let assignees = [];
+      try { assignees = await api(`/api/v1/incidents/${id}/assignees`); } catch {}
+      const ai = r.ai_analysis;
+      $("incidentDetail").innerHTML = `
+        <span class="chip chip-status">${statusLabel(r.status)}</span>
+        ${priorityChip(r.priority)}
+        <div class="detail-block">
+          <dt>Resumen</dt><dd>${r.summary || "—"}</dd>
+          <dt>Ubicación</dt><dd>${r.latitude.toFixed(5)}, ${r.longitude.toFixed(5)}</dd>
+          <dt>Tipo</dt><dd>${r.disaster_type || "—"} · ${r.evidence_type}</dd>
+          ${ai ? `
+            <dt>Análisis IA</dt>
+            <dd>Riesgo ${ai.risk_level} · confianza ${ai.confidence}</dd>
+            <dd>Recursos: ${ai.suggested_resources.join(", ")}</dd>
+            <dd style="color:var(--warning);font-style:italic">La IA no toma decisiones finales.</dd>
+          ` : "<dt>IA</dt><dd>Sin análisis</dd>"}
+          <dt>Rescatistas asignados</dt>
+          <dd>${assignees.length}: ${assignees.map(a => a.rescuer_name || a.rescuer_id).join(", ") || "ninguno"}</dd>
+        </div>
+      `;
+      show("screen-incident");
+    }
+
+    $("btnAccept").onclick = async () => {
+      try {
+        await api(`/api/v1/incidents/${state.currentIncidentId}/accept`, { method: "POST" });
+        toast("Incidente aceptado");
+        openIncident(state.currentIncidentId);
+      } catch (e) { toast(e.message); }
+    };
+    $("btnInProgress").onclick = async () => {
+      await api(`/api/v1/incidents/${state.currentIncidentId}/status`, {
+        method: "PATCH", json: { status: "in_progress", note: "En camino" },
+      });
+      toast("En progreso");
+      openIncident(state.currentIncidentId);
+    };
+    $("btnResolved").onclick = async () => {
+      await api(`/api/v1/incidents/${state.currentIncidentId}/status`, {
+        method: "PATCH", json: { status: "resolved", note: "Finalizado" },
+      });
+      toast("Rescate finalizado");
+      openIncident(state.currentIncidentId);
+    };
+
+    checkHealth();
+    setInterval(checkHealth, 15000);
+  </script>
+</body>
+</html>

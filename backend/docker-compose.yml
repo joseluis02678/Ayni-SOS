@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: ayni
+      POSTGRES_PASSWORD: ayni_secret
+      POSTGRES_DB: ayni_sos
+    ports:
+      - "5432:5432"
+    volumes:
+      - ayni_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ayni -d ayni_sos"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ayni_minio
+      MINIO_ROOT_PASSWORD: ayni_minio_secret
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ayni_minio_data:/data
+
+  api:
+    build:
+      context: ..
+      dockerfile: infra/docker/Dockerfile.api
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://ayni:ayni_secret@db:5432/ayni_sos
+      REDIS_URL: redis://redis:6379/0
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: ayni_minio
+      MINIO_SECRET_KEY: ayni_minio_secret
+      MINIO_BUCKET: ayni-evidence
+      MINIO_SECURE: "false"
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      minio:
+        condition: service_started
+
+volumes:
+  ayni_pg_data:
+  ayni_minio_data:

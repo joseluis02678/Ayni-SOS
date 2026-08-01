@@ -1,0 +1,39 @@
+name: rescuer_app
+description: Ayni SOS — Rescuer coordination dashboard
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.6
+  get_it: ^8.0.2
+  web_socket_channel: ^3.0.1
+  maplibre_gl: ^0.21.0
+  core:
+    path: ../../packages/core
+  data:
+    path: ../../packages/data
+  sync_engine:
+    path: ../../packages/sync_engine
+  mesh_transport:
+    path: ../../packages/mesh_transport
+  geo_service:
+    path: ../../packages/geo_service
+  ui_kit:
+    path: ../../packages/ui_kit
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/maps/

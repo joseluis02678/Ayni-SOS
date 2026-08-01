@@ -1,0 +1,25 @@
+name: sync_engine
+description: Offline-first sync with pluggable transports (HTTP, SMS, Mesh)
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core:
+    path: ../core
+  mesh_transport:
+    path: ../mesh_transport
+  dio: ^5.7.0
+  connectivity_plus: ^6.1.0
+  crypto: ^3.0.6
+  path: ^1.9.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  test: ^1.25.8

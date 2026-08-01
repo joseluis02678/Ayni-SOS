@@ -1,0 +1,12 @@
+name: ayni_sos
+repository:
+  type: git
+  url: https://github.com/ayni-sos/ayni-sos.git
+
+packages:
+  - apps/**
+  - packages/**
+
+command:
+  bootstrap:
+    runPubGetInParallel: true

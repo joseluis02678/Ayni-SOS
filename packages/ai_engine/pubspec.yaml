@@ -1,0 +1,19 @@
+name: ai_engine
+description: Local Gemma 4 emergency evaluation agent with structured JSON output
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  core:
+    path: ../core
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  test: ^1.25.8
