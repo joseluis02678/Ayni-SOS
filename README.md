@@ -1,8 +1,4 @@
-# Ayni-SOS
-Motor de triaje Edge AI para emergencias 100% offline. Utiliza Gemma 4 local y Flutter para operar en zonas sin cobertura durante desastres naturales.
-
 # 🚨 Ayni-SOS
-
 > **Respuesta táctica y clasificación de emergencias sin conexión a internet mediante IA Edge (Gemma) y redes Mesh.**
 
 ---
