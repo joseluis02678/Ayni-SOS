@@ -51,3 +51,4 @@ Durante catástrofes naturales como huaicos o inundaciones provocadas por el Fen
        ▼
 [🗺️ Mapa Offline (OpenStreetMap)]
        └─► Marcado táctico de prioridades en tiempo real
+```
