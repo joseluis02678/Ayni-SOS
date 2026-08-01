@@ -125,3 +125,4 @@ Guía detallada: [docs/mobile_run.md](docs/mobile_run.md) · Arquitectura: [docs
 Apache License 2.0 — ver [LICENSE](LICENSE).
 
 Desarrollado para Perú en el marco de la GDG AI Competition Lima 2026.
+Grupo SGD
