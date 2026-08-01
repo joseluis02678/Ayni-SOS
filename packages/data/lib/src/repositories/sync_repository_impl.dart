@@ -1,6 +1,8 @@
 import 'package:core/core.dart';
+import 'package:cross_file/cross_file.dart';
 import 'package:data/src/local/app_database.dart';
 import 'package:data/src/remote/api_client.dart';
+import 'package:dio/dio.dart';
 import 'package:sync_engine/sync_engine.dart';
 import 'package:uuid/uuid.dart';
 
@@ -40,14 +42,12 @@ class SyncRepositoryImpl implements SyncRepository {
       final full = FullPayload.fromReport(report);
 
       final capability = await _router.probeBest();
-      SyncResult result;
-
+      final SyncResult result;
       if (capability.canSendFull) {
         result = await _router.sendFull(full);
       } else if (capability.canSendCritical) {
         result = await _router.sendCritical(critical);
       } else {
-        // Mesh store-and-forward
         result = await _router.sendCritical(critical);
       }
 
@@ -62,7 +62,6 @@ class SyncRepositoryImpl implements SyncRepository {
         await _reports.update(updated);
         await _db.markOutboxDone(item['id'] as String);
 
-        // Deferred media upload when HTTP becomes available
         if (result.channel == SyncChannel.http &&
             report.evidenceLocalPath != null &&
             updated.serverId != null) {
@@ -74,11 +73,22 @@ class SyncRepositoryImpl implements SyncRepository {
 
   Future<void> _uploadMedia(EmergencyReport report) async {
     if (report.evidenceLocalPath == null || report.serverId == null) return;
-    // Media upload is best-effort; failures leave file for next sync cycle.
     try {
-      // Actual multipart is handled by HttpTransport when available.
-      await _api.dio; // keep reference warm
-    } catch (_) {}
+      final path = report.evidenceLocalPath!;
+      final name = path.split(RegExp(r'[\\/]')).last;
+      final bytes = await XFile(path).readAsBytes();
+      if (bytes.isEmpty) return;
+      final form = FormData.fromMap({
+        'file': MultipartFile.fromBytes(bytes, filename: name),
+        'sha256': report.evidenceHash ?? '',
+      });
+      await _api.dio.post(
+        '/api/v1/sync/media/${report.serverId}',
+        data: form,
+      );
+    } catch (_) {
+      // Best-effort: leave file for a later sync cycle.
+    }
   }
 
   @override

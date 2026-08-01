@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ui_kit/src/theme.dart';
 
+enum AyniButtonStyle { brand, emergency }
+
 class AyniPrimaryButton extends StatelessWidget {
   const AyniPrimaryButton({
     super.key,
@@ -8,22 +10,35 @@ class AyniPrimaryButton extends StatelessWidget {
     required this.onPressed,
     this.icon,
     this.isLoading = false,
+    this.style = AyniButtonStyle.brand,
   });
 
   final String label;
   final VoidCallback? onPressed;
   final IconData? icon;
   final bool isLoading;
+  final AyniButtonStyle style;
 
   @override
   Widget build(BuildContext context) {
+    final bg = style == AyniButtonStyle.emergency
+        ? AyniColors.accent
+        : AyniColors.primary;
+
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: bg,
+        foregroundColor: Colors.white,
+      ),
       child: isLoading
           ? const SizedBox(
               height: 24,
               width: 24,
-              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
             )
           : Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -47,11 +62,11 @@ class AyniStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = color ?? AyniColors.secondary;
+    final c = color ?? AyniColors.primary;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: c.withValues(alpha: 0.2),
+        color: c.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: c),
       ),
@@ -77,7 +92,11 @@ class AyniEmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon ?? Icons.info_outline, size: 64, color: AyniColors.textSecondary),
+            Icon(
+              icon ?? Icons.info_outline,
+              size: 64,
+              color: AyniColors.textSecondary,
+            ),
             const SizedBox(height: 16),
             Text(
               message,

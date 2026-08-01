@@ -31,15 +31,11 @@ venv/
 dist/
 *.egg
 
-# Env / secrets / local data
-.env
-.env.*
-!.env.example
-**/*.pem
-**/credentials.json
-**/ayni_sos_local.db
-**/*.db
-**/media_store/
+**/android/key.properties
+**/signing/*.jks
+**/signing/*.keystore
+*.jks
+*.keystore
 
 # OS
 .DS_Store

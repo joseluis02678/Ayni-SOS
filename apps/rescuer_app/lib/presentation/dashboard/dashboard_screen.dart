@@ -94,7 +94,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       value: _cubit,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Dashboard rescatista'),
+          title: const AyniAppBarTitle(subtitle: 'Rescatista'),
           actions: [
             IconButton(
               icon: const Icon(Icons.history),

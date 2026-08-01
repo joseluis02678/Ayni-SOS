@@ -1,51 +1,65 @@
 import 'package:flutter/material.dart';
 
-/// Emergency-response inspired palette — sober, high readability, trust.
+/// Brand palette derived from the AyniSOS logo (teal shield, navy type, orange spark).
 class AyniColors {
-  static const background = Color(0xFF0F1419);
-  static const surface = Color(0xFF1A2332);
-  static const surfaceElevated = Color(0xFF243044);
-  static const primary = Color(0xFFC0392B);
-  static const secondary = Color(0xFF2E86AB);
-  static const textPrimary = Color(0xFFF4F6F8);
-  static const textSecondary = Color(0xFFA8B3C0);
-  static const success = Color(0xFF27AE60);
-  static const warning = Color(0xFFE67E22);
+  static const background = Color(0xFFF3F7F8);
+  static const surface = Color(0xFFFFFFFF);
+  static const surfaceElevated = Color(0xFFE6F0F2);
+  static const primary = Color(0xFF2F95A4);
+  static const secondary = Color(0xFF1C2E4A);
+  static const accent = Color(0xFFF48B29);
+  static const textPrimary = Color(0xFF1C2E4A);
+  static const textSecondary = Color(0xFF5A6B7D);
+  static const success = Color(0xFF2E9B63);
+  static const warning = Color(0xFFF48B29);
   static const critical = Color(0xFFC0392B);
 }
 
 ThemeData buildAyniTheme() {
-  const scheme = ColorScheme.dark(
+  const scheme = ColorScheme.light(
     primary: AyniColors.primary,
     secondary: AyniColors.secondary,
+    tertiary: AyniColors.accent,
     surface: AyniColors.surface,
     error: AyniColors.critical,
-    onPrimary: AyniColors.textPrimary,
-    onSecondary: AyniColors.textPrimary,
+    onPrimary: Colors.white,
+    onSecondary: Colors.white,
+    onTertiary: Colors.white,
     onSurface: AyniColors.textPrimary,
-    onError: AyniColors.textPrimary,
+    onError: Colors.white,
   );
 
   return ThemeData(
     useMaterial3: true,
-    brightness: Brightness.dark,
+    brightness: Brightness.light,
     colorScheme: scheme,
     scaffoldBackgroundColor: AyniColors.background,
+    dividerColor: AyniColors.surfaceElevated,
     appBarTheme: const AppBarTheme(
       backgroundColor: AyniColors.surface,
       foregroundColor: AyniColors.textPrimary,
       elevation: 0,
+      scrolledUnderElevation: 0.5,
       centerTitle: true,
+      titleTextStyle: TextStyle(
+        color: AyniColors.textPrimary,
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.2,
+      ),
     ),
     cardTheme: CardThemeData(
       color: AyniColors.surface,
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Color(0xFFE0E8EC)),
+      ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AyniColors.primary,
-        foregroundColor: AyniColors.textPrimary,
+        foregroundColor: Colors.white,
         minimumSize: const Size.fromHeight(56),
         textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -53,21 +67,28 @@ ThemeData buildAyniTheme() {
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: AyniColors.textPrimary,
+        foregroundColor: AyniColors.secondary,
         minimumSize: const Size.fromHeight(56),
-        side: const BorderSide(color: AyniColors.secondary, width: 2),
+        side: const BorderSide(color: AyniColors.primary, width: 2),
         textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: AyniColors.primary),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AyniColors.surfaceElevated,
+      fillColor: AyniColors.surface,
       labelStyle: const TextStyle(color: AyniColors.textSecondary),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AyniColors.surfaceElevated),
+        borderSide: const BorderSide(color: Color(0xFFD5E0E4)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AyniColors.primary, width: 2),
       ),
     ),
     textTheme: const TextTheme(
@@ -75,14 +96,15 @@ ThemeData buildAyniTheme() {
         color: AyniColors.textPrimary,
         fontSize: 28,
         fontWeight: FontWeight.bold,
+        letterSpacing: -0.4,
       ),
       titleLarge: TextStyle(
         color: AyniColors.textPrimary,
         fontSize: 20,
         fontWeight: FontWeight.w600,
       ),
-      bodyLarge: TextStyle(color: AyniColors.textPrimary, fontSize: 16),
-      bodyMedium: TextStyle(color: AyniColors.textSecondary, fontSize: 14),
+      bodyLarge: TextStyle(color: AyniColors.textPrimary, fontSize: 16, height: 1.4),
+      bodyMedium: TextStyle(color: AyniColors.textSecondary, fontSize: 14, height: 1.4),
     ),
   );
 }

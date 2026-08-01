@@ -44,44 +44,61 @@ class _RescuerLoginScreenState extends State<RescuerLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Spacer(),
-              Text('Ayni SOS', style: Theme.of(context).textTheme.headlineLarge),
-              Text('Panel de rescatista',
-                  style: Theme.of(context).textTheme.bodyLarge),
-              const SizedBox(height: 32),
-              TextField(
-                controller: _email,
-                decoration: const InputDecoration(labelText: 'Correo'),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _password,
-                obscureText: true,
-                decoration: const InputDecoration(labelText: 'Contraseña'),
-              ),
-              if (_error != null) ...[
-                const SizedBox(height: 12),
-                Text(_error!, style: const TextStyle(color: AyniColors.critical)),
-              ],
-              const SizedBox(height: 24),
-              AyniPrimaryButton(
-                label: 'Entrar',
-                isLoading: _loading,
-                onPressed: _login,
-              ),
-              TextButton(
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(AppRouter.register),
-                child: const Text('Registrar rescatista'),
-              ),
-              const Spacer(),
+      body: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFE8F4F6),
+              AyniColors.background,
+              Color(0xFFF7F9FA),
             ],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Spacer(flex: 2),
+                const Center(child: AyniLogo(height: 170)),
+                const SizedBox(height: 8),
+                Text(
+                  'Panel de rescatista',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 32),
+                TextField(
+                  controller: _email,
+                  decoration: const InputDecoration(labelText: 'Correo'),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _password,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: 'Contraseña'),
+                ),
+                if (_error != null) ...[
+                  const SizedBox(height: 12),
+                  Text(_error!, style: const TextStyle(color: AyniColors.critical)),
+                ],
+                const SizedBox(height: 24),
+                AyniPrimaryButton(
+                  label: 'Entrar',
+                  isLoading: _loading,
+                  onPressed: _login,
+                ),
+                TextButton(
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(AppRouter.register),
+                  child: const Text('Registrar rescatista'),
+                ),
+                const Spacer(flex: 3),
+              ],
+            ),
           ),
         ),
       ),

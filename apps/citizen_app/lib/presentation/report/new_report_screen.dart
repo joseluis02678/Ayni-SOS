@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:ai_engine/ai_engine.dart';
 import 'package:citizen_app/injection/injection.dart';
+import 'package:citizen_app/presentation/report/evidence_store_io.dart'
+    if (dart.library.html) 'package:citizen_app/presentation/report/evidence_store_web.dart';
 import 'package:citizen_app/routes/app_router.dart';
 import 'package:core/core.dart';
 import 'package:crypto/crypto.dart';
@@ -40,7 +42,6 @@ class _NewReportScreenState extends State<NewReportScreen> {
         maxWidth: 1600,
       );
     } catch (_) {
-      // Web / desktop often lack camera — fall back to gallery
       file = await picker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 70,
@@ -48,9 +49,10 @@ class _NewReportScreenState extends State<NewReportScreen> {
       );
     }
     if (file == null) return;
+    final stored = await persistEvidenceFile(file, 'jpg');
     setState(() {
       _choice = _EvidenceChoice.photo;
-      _evidenceFile = file;
+      _evidenceFile = stored;
       _status = 'Foto lista';
     });
   }
@@ -58,11 +60,15 @@ class _NewReportScreenState extends State<NewReportScreen> {
   Future<void> _toggleAudio() async {
     if (_recording) {
       final path = await _recorder.stop();
+      XFile? stored;
+      if (path != null) {
+        stored = await persistEvidenceFile(XFile(path), kIsWeb ? 'wav' : 'm4a');
+      }
       setState(() {
         _recording = false;
         _choice = _EvidenceChoice.audio;
-        _evidenceFile = path != null ? XFile(path) : null;
-        _status = path != null ? 'Audio listo' : 'No se guardó el audio';
+        _evidenceFile = stored;
+        _status = stored != null ? 'Audio listo' : 'No se guardó el audio';
       });
       return;
     }
@@ -70,8 +76,9 @@ class _NewReportScreenState extends State<NewReportScreen> {
       setState(() => _status = 'Permiso de micrófono denegado');
       return;
     }
-    // record 5.x requires path on all platforms (blob path on web).
-    final path = 'ayni_${const Uuid().v4()}.${kIsWeb ? 'wav' : 'm4a'}';
+    final path = kIsWeb
+        ? 'ayni_${const Uuid().v4()}.wav'
+        : await newAudioCapturePath();
     await _recorder.start(
       RecordConfig(encoder: kIsWeb ? AudioEncoder.wav : AudioEncoder.aacLc),
       path: path,
@@ -98,7 +105,6 @@ class _NewReportScreenState extends State<NewReportScreen> {
       try {
         location = await getIt<LocationService>().currentPosition();
       } catch (_) {
-        // Web / denied permission: Lima fallback for prototype
         location = const GeoPoint(latitude: -12.0464, longitude: -77.0428);
         setState(() => _status = 'GPS simulado (Lima)…');
       }
@@ -115,8 +121,10 @@ class _NewReportScreenState extends State<NewReportScreen> {
         EvidenceInput(
           type: evidenceType,
           locationHint: '${location.latitude},${location.longitude}',
-          imageBytes: evidenceType == EvidenceType.photo ? Uint8List.fromList(bytes) : null,
-          audioBytes: evidenceType == EvidenceType.audio ? Uint8List.fromList(bytes) : null,
+          imageBytes:
+              evidenceType == EvidenceType.photo ? Uint8List.fromList(bytes) : null,
+          audioBytes:
+              evidenceType == EvidenceType.audio ? Uint8List.fromList(bytes) : null,
         ),
       );
 
@@ -231,7 +239,7 @@ class _EvidenceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? AyniColors.secondary.withValues(alpha: 0.3) : AyniColors.surface,
+      color: selected ? AyniColors.primary.withValues(alpha: 0.12) : AyniColors.surface,
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
         onTap: onTap,
@@ -241,7 +249,7 @@ class _EvidenceCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: selected ? AyniColors.secondary : AyniColors.surfaceElevated,
+              color: selected ? AyniColors.primary : const Color(0xFFD5E0E4),
               width: 2,
             ),
           ),

@@ -5,26 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>Ayni SOS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <style>
     :root {
-      --bg: #0F1419;
-      --surface: #1A2332;
-      --elevated: #243044;
-      --primary: #C0392B;
-      --secondary: #2E86AB;
-      --text: #F4F6F8;
-      --muted: #A8B3C0;
-      --success: #27AE60;
-      --warning: #E67E22;
+      --bg: #F3F7F8;
+      --surface: #FFFFFF;
+      --elevated: #E6F0F2;
+      --primary: #2F95A4;
+      --secondary: #1C2E4A;
+      --accent: #F48B29;
+      --text: #1C2E4A;
+      --muted: #5A6B7D;
+      --success: #2E9B63;
+      --warning: #F48B29;
+      --border: #D5E0E4;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: "DM Sans", system-ui, sans-serif;
+      font-family: "Manrope", system-ui, sans-serif;
       background:
-        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(192,57,43,.25), transparent),
-        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(46,134,171,.2), transparent),
-        var(--bg);
+        radial-gradient(ellipse 90% 55% at 15% -5%, rgba(47,149,164,.18), transparent),
+        radial-gradient(ellipse 70% 45% at 100% 5%, rgba(244,139,41,.12), transparent),
+        linear-gradient(180deg, #E8F4F6 0%, var(--bg) 40%, #F7F9FA 100%);
       color: var(--text);
       min-height: 100vh;
     }
@@ -34,40 +37,49 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      border-left: 1px solid rgba(255,255,255,.04);
-      border-right: 1px solid rgba(255,255,255,.04);
-      background: rgba(15,20,25,.65);
-      backdrop-filter: blur(8px);
+      border-left: 1px solid rgba(28,46,74,.06);
+      border-right: 1px solid rgba(28,46,74,.06);
+      background: rgba(255,255,255,.72);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 48px rgba(28,46,74,.06);
     }
     header {
-      padding: 16px 20px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(255,255,255,.06);
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
       background: var(--surface);
     }
     .brand {
-      font-family: "Instrument Serif", Georgia, serif;
-      font-size: 1.5rem;
-      letter-spacing: .02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .brand img {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
     }
     .role-toggle {
       display: flex;
       gap: 4px;
       background: var(--elevated);
-      border-radius: 999px;
+      border-radius: 12px;
       padding: 3px;
+      flex-shrink: 0;
     }
     .role-toggle button {
       border: 0;
       background: transparent;
       color: var(--muted);
       padding: 6px 12px;
-      border-radius: 999px;
+      border-radius: 10px;
       font: inherit;
       font-size: .75rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
     }
     .role-toggle button.active {
@@ -78,14 +90,14 @@
     .screen { display: none; animation: fade .25s ease; }
     .screen.active { display: block; }
     @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-    h1 { font-size: 1.75rem; margin-bottom: 8px; }
+    h1 { font-size: 1.75rem; margin-bottom: 8px; letter-spacing: -.02em; }
     h2 { font-size: 1.15rem; margin-bottom: 12px; }
     p.lead { color: var(--muted); margin-bottom: 28px; line-height: 1.45; }
-    label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 6px; }
+    label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
     input, select, textarea {
       width: 100%;
-      background: var(--elevated);
-      border: 1px solid transparent;
+      background: var(--surface);
+      border: 1px solid var(--border);
       color: var(--text);
       border-radius: 12px;
       padding: 14px 16px;
@@ -94,7 +106,8 @@
     }
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: var(--secondary);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(47,149,164,.15);
     }
     .btn {
       width: 100%;
@@ -103,7 +116,7 @@
       padding: 16px;
       font: inherit;
       font-size: 1.05rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -115,10 +128,11 @@
     .btn:active { transform: scale(.98); }
     .btn:disabled { opacity: .5; cursor: not-allowed; }
     .btn-primary { background: var(--primary); color: white; }
+    .btn-sos { background: var(--accent); color: white; }
     .btn-secondary {
       background: transparent;
-      color: var(--text);
-      border: 2px solid var(--secondary);
+      color: var(--secondary);
+      border: 2px solid var(--primary);
       margin-top: 10px;
     }
     .btn-ghost {
@@ -126,13 +140,18 @@
       color: var(--muted);
       margin-top: 8px;
     }
-    .hero-icon {
-      width: 96px; height: 96px;
-      margin: 40px auto 24px;
-      border-radius: 50%;
-      background: rgba(192,57,43,.15);
-      display: grid; place-items: center;
-      font-size: 2.5rem;
+    .hero-logo {
+      display: block;
+      width: min(220px, 70%);
+      height: auto;
+      margin: 12px auto 20px;
+      filter: drop-shadow(0 8px 24px rgba(47,149,164,.18));
+    }
+    .auth-logo {
+      display: block;
+      width: min(200px, 65%);
+      height: auto;
+      margin: 8px auto 20px;
     }
     .evidence-grid {
       display: grid;
@@ -142,16 +161,17 @@
     }
     .evidence-card {
       background: var(--surface);
-      border: 2px solid var(--elevated);
+      border: 2px solid var(--border);
       border-radius: 20px;
       padding: 28px 12px;
       text-align: center;
       cursor: pointer;
-      transition: border-color .15s, background .15s;
+      transition: border-color .15s, background .15s, box-shadow .15s;
     }
     .evidence-card.selected {
-      border-color: var(--secondary);
-      background: rgba(46,134,171,.2);
+      border-color: var(--primary);
+      background: rgba(47,149,164,.1);
+      box-shadow: 0 0 0 3px rgba(47,149,164,.12);
     }
     .evidence-card .ico { font-size: 2.5rem; margin-bottom: 10px; }
     .chip {
@@ -159,24 +179,24 @@
       padding: 6px 12px;
       border-radius: 20px;
       font-size: .8rem;
-      font-weight: 600;
+      font-weight: 700;
       border: 1px solid;
       margin-right: 6px;
       margin-bottom: 6px;
     }
-    .chip-status { color: var(--secondary); border-color: var(--secondary); background: rgba(46,134,171,.15); }
-    .chip-p1 { color: #C0392B; border-color: #C0392B; background: rgba(192,57,43,.15); }
-    .chip-p2 { color: #E67E22; border-color: #E67E22; background: rgba(230,126,34,.15); }
-    .chip-p3 { color: #F1C40F; border-color: #F1C40F; background: rgba(241,196,15,.12); }
+    .chip-status { color: var(--primary); border-color: var(--primary); background: rgba(47,149,164,.12); }
+    .chip-p1 { color: #C0392B; border-color: #C0392B; background: rgba(192,57,43,.1); }
+    .chip-p2 { color: #F48B29; border-color: #F48B29; background: rgba(244,139,41,.12); }
+    .chip-p3 { color: #C9A227; border-color: #C9A227; background: rgba(201,162,39,.12); }
     .card {
       background: var(--surface);
       border-radius: 16px;
       padding: 16px;
       margin-bottom: 10px;
       cursor: pointer;
-      border: 1px solid transparent;
+      border: 1px solid var(--border);
     }
-    .card:hover { border-color: var(--elevated); }
+    .card:hover { border-color: var(--primary); }
     .card .meta { color: var(--muted); font-size: .85rem; margin-top: 6px; }
     .dot {
       width: 10px; height: 10px; border-radius: 50%;
@@ -184,10 +204,10 @@
     }
     .toast {
       position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      background: var(--elevated); color: var(--text);
+      background: var(--secondary); color: white;
       padding: 12px 18px; border-radius: 12px;
       font-size: .9rem; z-index: 50;
-      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      box-shadow: 0 8px 32px rgba(28,46,74,.25);
       display: none; max-width: 90%;
     }
     .toast.show { display: block; animation: fade .2s ease; }
@@ -195,33 +215,26 @@
     .api-bar {
       font-size: .7rem; color: var(--muted);
       padding: 8px 20px;
-      border-top: 1px solid rgba(255,255,255,.06);
+      border-top: 1px solid var(--border);
       display: flex; justify-content: space-between; gap: 8px;
+      background: var(--surface);
     }
     .api-bar .ok { color: var(--success); }
-    .api-bar .bad { color: var(--primary); }
-    .map-placeholder {
-      height: 220px;
+    .api-bar .bad { color: #C0392B; }
+    #mapBox {
+      height: 260px;
       border-radius: 16px;
-      background:
-        linear-gradient(135deg, #1a2a3a 0%, #0f1a24 50%, #1e3344 100%);
-      position: relative;
-      overflow: hidden;
       margin-bottom: 16px;
-      border: 1px solid var(--elevated);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      z-index: 1;
     }
-    .map-placeholder::after {
-      content: "Mapa · Lima (simulado)";
-      position: absolute; bottom: 10px; left: 12px;
-      font-size: .75rem; color: var(--muted);
-    }
-    .marker {
-      position: absolute;
-      width: 18px; height: 18px;
+    .leaflet-container { font: inherit; background: #e8f1f3; }
+    .ayni-marker {
+      width: 16px; height: 16px;
       border-radius: 50%;
-      border: 2px solid white;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 0 4px rgba(192,57,43,.25);
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 3px rgba(47,149,164,.25);
     }
     .detail-block { margin: 16px 0; }
     .detail-block dt { color: var(--muted); font-size: .8rem; margin-top: 10px; }
@@ -233,7 +246,9 @@
 <body>
   <div class="shell">
     <header>
-      <div class="brand">Ayni SOS</div>
+      <div class="brand">
+        <img src="assets/logo.png" alt="AyniSOS" />
+      </div>
       <div class="role-toggle">
         <button id="btnRoleCitizen" class="active" type="button">Ciudadano</button>
         <button id="btnRoleRescuer" type="button">Rescatista</button>
@@ -243,8 +258,8 @@
     <main>
       <!-- AUTH -->
       <section id="screen-auth" class="screen active">
-        <h1>Bienvenido</h1>
-        <p class="lead">Ayuda en emergencias por huaicos e inundaciones. Conectado a la API local.</p>
+        <img class="auth-logo" src="assets/logo.png" alt="AyniSOS" />
+        <p class="lead center">Ayuda en emergencias por huaicos e inundaciones. Conectado a la API local.</p>
         <label>Correo</label>
         <input id="email" type="email" value="demo@example.com" autocomplete="username" />
         <label>Contraseña</label>
@@ -258,10 +273,10 @@
 
       <!-- CITIZEN HOME -->
       <section id="screen-citizen-home" class="screen">
-        <div class="hero-icon">🆘</div>
+        <img class="hero-logo" src="assets/logo.png" alt="AyniSOS" />
         <h1 class="center">¿Necesitas ayuda?</h1>
         <p class="lead center">Envía una evidencia (audio o foto) con tu ubicación. La IA analizará el reporte.</p>
-        <button class="btn btn-primary" id="btnAskHelp" type="button">Pedir ayuda</button>
+        <button class="btn btn-sos" id="btnAskHelp" type="button">Pedir ayuda</button>
         <button class="btn btn-secondary" id="btnHistory" type="button">Ver mis solicitudes</button>
         <button class="btn btn-ghost" id="btnLogout1" type="button">Salir</button>
       </section>
@@ -304,7 +319,7 @@
       <!-- RESCUER DASHBOARD -->
       <section id="screen-rescuer" class="screen">
         <h2>Dashboard rescatista</h2>
-        <div class="map-placeholder" id="mapBox"></div>
+        <div id="mapBox"></div>
         <div id="incidentList"></div>
         <button class="btn btn-secondary" id="btnRefreshIncidents" type="button">Actualizar mapa</button>
         <button class="btn btn-ghost" id="btnLogout2" type="button">Salir</button>
@@ -329,9 +344,14 @@
   </div>
   <div class="toast" id="toast"></div>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     // Use same host as the page so phone testing works over LAN
     const API = `${location.protocol}//${location.hostname}:8000`;
+    const LIMA = [-12.0464, -77.0428];
+    let leafletMap = null;
+    let markerLayer = null;
+
     const state = {
       role: "citizen",
       token: null,
@@ -342,11 +362,66 @@
       currentIncidentId: null,
     };
 
+    function ensureMap() {
+      if (leafletMap) {
+        setTimeout(() => leafletMap.invalidateSize(), 80);
+        return leafletMap;
+      }
+      leafletMap = L.map("mapBox", {
+        zoomControl: true,
+        attributionControl: true,
+      }).setView(LIMA, 12);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(leafletMap);
+      markerLayer = L.layerGroup().addTo(leafletMap);
+      setTimeout(() => leafletMap.invalidateSize(), 120);
+      return leafletMap;
+    }
+
+    function priorityColor(p) {
+      return p <= 1 ? "#C0392B" : p === 2 ? "#F48B29" : "#C9A227";
+    }
+
+    function syncMapMarkers(list) {
+      ensureMap();
+      markerLayer.clearLayers();
+      const bounds = [];
+      list.forEach((r) => {
+        if (typeof r.latitude !== "number" || typeof r.longitude !== "number") return;
+        const color = priorityColor(r.priority);
+        const icon = L.divIcon({
+          className: "",
+          html: `<div class="ayni-marker" style="background:${color}"></div>`,
+          iconSize: [16, 16],
+          iconAnchor: [8, 8],
+        });
+        const marker = L.marker([r.latitude, r.longitude], { icon });
+        marker.bindPopup(
+          `<strong>${r.summary || "Incidente"}</strong><br>P${r.priority} · ${statusLabel(r.status)}`
+        );
+        marker.on("click", () => openIncident(r.id));
+        markerLayer.addLayer(marker);
+        bounds.push([r.latitude, r.longitude]);
+      });
+      if (bounds.length === 1) {
+        leafletMap.setView(bounds[0], 14);
+      } else if (bounds.length > 1) {
+        leafletMap.fitBounds(bounds, { padding: [28, 28], maxZoom: 15 });
+      } else {
+        leafletMap.setView(LIMA, 12);
+      }
+    }
+
     const $ = (id) => document.getElementById(id);
 
     function show(id) {
       document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
       $(id).classList.add("active");
+      if (id === "screen-rescuer") {
+        ensureMap();
+      }
     }
 
     function toast(msg) {
@@ -614,24 +689,14 @@
     async function loadIncidents() {
       try {
         const list = await api("/api/v1/incidents");
-        const box = $("mapBox");
-        box.querySelectorAll(".marker").forEach((m) => m.remove());
-        list.slice(0, 12).forEach((r, i) => {
-          const m = document.createElement("div");
-          m.className = "marker";
-          m.style.background = r.priority <= 1 ? "#C0392B" : r.priority === 2 ? "#E67E22" : "#F1C40F";
-          m.style.left = `${20 + (i % 5) * 15 + Math.random() * 8}%`;
-          m.style.top = `${25 + Math.floor(i / 5) * 22 + Math.random() * 10}%`;
-          m.title = `P${r.priority}`;
-          box.appendChild(m);
-        });
+        syncMapMarkers(list);
         $("incidentList").innerHTML = list.length
           ? list.map((r) => `
             <div class="card" data-id="${r.id}">
-              <div><span class="dot" style="background:${r.priority<=1?'#C0392B':r.priority===2?'#E67E22':'#F1C40F'}"></span>${r.summary || "Incidente"}</div>
+              <div><span class="dot" style="background:${priorityColor(r.priority)}"></span>${r.summary || "Incidente"}</div>
               <div class="meta">${statusLabel(r.status)} · P${r.priority} · ${r.assignee_count} rescatistas</div>
             </div>`).join("")
-          : `<p class="lead">Sin incidentes</p>`;
+          : `<p class="lead">Sin incidentes en el mapa</p>`;
         $("incidentList").querySelectorAll(".card").forEach((c) => {
           c.onclick = () => openIncident(c.dataset.id);
         });

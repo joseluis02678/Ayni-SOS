@@ -15,9 +15,10 @@ dependencies:
   uuid: ^4.5.1
   crypto: ^3.0.6
   image_picker: ^1.1.2
-  record: ^5.1.2
+  record: ^6.0.0
   cross_file: ^0.3.4
   permission_handler: ^11.3.1
+  path_provider: ^2.1.5
   core:
     path: ../../packages/core
   data:

@@ -52,49 +52,65 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Spacer(),
-              Text('Ayni SOS', style: Theme.of(context).textTheme.headlineLarge),
-              const SizedBox(height: 8),
-              Text(
-                'Ayuda en emergencias por huaicos e inundaciones',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              const SizedBox(height: 40),
-              TextField(
-                controller: _email,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(labelText: 'Correo'),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _password,
-                obscureText: true,
-                decoration: const InputDecoration(labelText: 'Contraseña'),
-              ),
-              if (_error != null) ...[
-                const SizedBox(height: 12),
-                Text(_error!, style: const TextStyle(color: AyniColors.critical)),
-              ],
-              const SizedBox(height: 24),
-              AyniPrimaryButton(
-                label: 'Iniciar sesión',
-                isLoading: _loading,
-                onPressed: _login,
-              ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(AppRouter.register),
-                child: const Text('Crear cuenta'),
-              ),
-              const Spacer(),
+      body: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFE8F4F6),
+              AyniColors.background,
+              Color(0xFFF7F9FA),
             ],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Spacer(flex: 2),
+                const Center(child: AyniLogo(height: 180)),
+                const SizedBox(height: 12),
+                Text(
+                  'Ayuda en emergencias por huaicos e inundaciones',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: AyniColors.textSecondary,
+                      ),
+                ),
+                const SizedBox(height: 36),
+                TextField(
+                  controller: _email,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(labelText: 'Correo'),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _password,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: 'Contraseña'),
+                ),
+                if (_error != null) ...[
+                  const SizedBox(height: 12),
+                  Text(_error!, style: const TextStyle(color: AyniColors.critical)),
+                ],
+                const SizedBox(height: 24),
+                AyniPrimaryButton(
+                  label: 'Iniciar sesión',
+                  isLoading: _loading,
+                  onPressed: _login,
+                ),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(AppRouter.register),
+                  child: const Text('Crear cuenta'),
+                ),
+                const Spacer(flex: 3),
+              ],
+            ),
           ),
         ),
       ),

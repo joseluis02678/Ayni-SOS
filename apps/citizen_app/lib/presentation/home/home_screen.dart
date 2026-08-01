@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ayni SOS'),
+        title: const AyniAppBarTitle(),
         actions: [
           IconButton(
             tooltip: 'Historial',
@@ -37,8 +37,21 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(),
-              Icon(Icons.sos, size: 96, color: AyniColors.primary),
-              const SizedBox(height: 24),
+              Container(
+                width: 88,
+                height: 88,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AyniColors.primary.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.emergency_share,
+                  size: 44,
+                  color: AyniColors.accent,
+                ),
+              ),
+              const SizedBox(height: 28),
               Text(
                 '¿Necesitas ayuda?',
                 textAlign: TextAlign.center,
@@ -49,12 +62,15 @@ class HomeScreen extends StatelessWidget {
                 'Envía una evidencia (audio o foto) con tu ubicación. '
                 'La IA analizará el reporte en tu dispositivo.',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: AyniColors.textSecondary,
+                    ),
               ),
               const Spacer(),
               AyniPrimaryButton(
                 label: 'Pedir ayuda',
                 icon: Icons.emergency,
+                style: AyniButtonStyle.emergency,
                 onPressed: () =>
                     Navigator.of(context).pushNamed(AppRouter.newReport),
               ),

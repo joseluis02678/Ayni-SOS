@@ -1,6 +1,7 @@
 import 'package:ai_engine/ai_engine.dart';
 import 'package:core/core.dart';
 import 'package:data/data.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geo_service/geo_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mesh_transport/mesh_transport.dart';
@@ -23,9 +24,12 @@ Future<void> configureDependencies({required String apiBaseUrl}) async {
   final reportRepo = ReportRepositoryImpl(db);
   final syncRepo = SyncRepositoryImpl(db, api, router, reportRepo);
 
-  final runtime = HeuristicRuntime();
+  final runtime = await _buildGemmaRuntime();
   final agent = EmergencyAgent(runtime);
-  await agent.warmUp();
+  final modelPath = await resolveGemmaModelPath();
+  await agent.warmUp(
+    modelPath: modelPath ?? 'models/gemma-4-E2B-it.litertlm',
+  );
 
   getIt
     ..registerSingleton<AppDatabase>(db)
@@ -40,4 +44,25 @@ Future<void> configureDependencies({required String apiBaseUrl}) async {
     ..registerSingleton(LoginUser(authRepo))
     ..registerSingleton(RegisterUser(authRepo))
     ..registerSingleton(CreateEmergencyReport(reportRepo, syncRepo));
+}
+
+Future<GemmaRuntime> _buildGemmaRuntime() async {
+  final heuristic = HeuristicRuntime();
+  final forceHeuristic = const bool.fromEnvironment(
+    'FORCE_HEURISTIC_AI',
+    defaultValue: false,
+  );
+  if (forceHeuristic || kIsWeb) {
+    return heuristic;
+  }
+
+  final modelPath = await resolveGemmaModelPath();
+  if (modelPath == null || defaultTargetPlatform != TargetPlatform.android) {
+    return heuristic;
+  }
+
+  return FallbackGemmaRuntime(
+    primary: LiteRtGemmaRuntime(),
+    fallback: heuristic,
+  );
 }
