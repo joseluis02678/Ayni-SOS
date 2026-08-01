@@ -32,20 +32,6 @@ Durante catástrofes naturales como huaicos o inundaciones provocadas por el Fen
 
 ---
 
-## 🛠️ Tecnologías y Arquitectura
-
-| Componente | Tecnología / Herramienta | Descripción |
-| :--- | :--- | :--- |
-| **Core de IA (Edge AI)** | **Google Gemma** (cuantización INT4) | Modelo ejecutable en el hardware del dispositivo sin depender de la nube. |
-| **Motor de Inferencia** | **MediaPipe LLM Inference API** | Ejecución de operaciones matemáticas del modelo directamente en el chip móvil. |
-| **Desarrollo Mobile** | **Flutter (Dart)** | Aplicación nativa y ágil para Android. |
-| **Redes sin Internet** | **Google Nearby Connections API** | Transmisión de paquetes de datos P2P vía Wi-Fi Direct y Bluetooth. |
-| **Mapas y GPS Offline** | **Flutter Map + OpenStreetMap Vector Tiles** | Cartografía vectorial guardada localmente + chip GPS nativo (`geolocator`). |
-| **Entrada de Voz** | **STT (Speech-to-Text) Local** | Conversión de audio a texto para el análisis de Gemma. |
-| **Entorno de Dev** | GitHub, Cursor, VS Code, Antigravity | Control de versiones y asistencia de código. |
-
----
-
 ## 📱 Flujo de Funcionamiento
 
 ```text
