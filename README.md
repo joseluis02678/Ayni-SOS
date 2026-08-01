@@ -52,3 +52,62 @@ Durante catástrofes naturales como huaicos o inundaciones provocadas por el Fen
 [🗺️ Mapa Offline (OpenStreetMap)]
        └─► Marcado táctico de prioridades en tiempo real
 ```
+
+##  🛠️ Tecnologías Utilizadas
+
+- Motor de IA: Gemma 4 (Google) ejecutado vía Ollama.
+
+- Backend Edge: Python 3.12, FastAPI.
+
+- Frontend Móvil: Flutter (Dart).
+
+- Mapas: Flutter Map, OpenStreetMap (Vector Tiles Offline).
+
+- Datos Abiertos: Integración de JSON local con estadísticas de INABIF/INDECI.
+
+## 🚀 Despliegue Rápido
+
+1. Clonar el repositorio:
+```
+git clone [https://github.com/joseluis02678/ayni-sos.git](https://github.com/joseluis02678/ayni-sos.git)
+cd ayni-sos
+```
+
+2. Iniciar el motor de IA local:
+```
+ollama serve
+```
+
+3. Instalar dependencias e iniciar el Backend:
+```
+pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+Desarrollado con ❤️ para Perú en el marco de la GDG AI Competition Lima 2026.
+
+---
+
+### 2. Archivo de Licencia (LICENSE)
+
+Para cumplir con la recomendación de usar código abierto, debes crear un archivo en la raíz de tu proyecto llamado exactamente `LICENSE` (sin extensión) y pegar este texto. He incluido tu nombre completo y el año actual.
+
+```text
+Apache License
+Version 2.0, January 2004
+http://www.apache.org/licenses/
+
+Copyright 2026 Jose Luis Garay Ramos
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
