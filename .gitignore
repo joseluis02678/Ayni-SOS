@@ -9,11 +9,16 @@ build/
 **/.pub-cache/
 **/pubspec.lock
 **/ios/Pods/
+**/ios/Flutter/ephemeral/
 **/android/.gradle/
 **/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
 **/*.iml
 .idea/
 .vscode/
+
+# Nested clone / accidentals
+/Ayni-SOS/
 
 # Python
 __pycache__/
@@ -24,11 +29,17 @@ venv/
 .pytest_cache/
 .ruff_cache/
 dist/
+*.egg
 
-# Env / secrets
-.env.local
+# Env / secrets / local data
+.env
+.env.*
+!.env.example
 **/*.pem
 **/credentials.json
+**/ayni_sos_local.db
+**/*.db
+**/media_store/
 
 # OS
 .DS_Store
@@ -41,3 +52,4 @@ Thumbs.db
 
 # Cursor
 .cursor/
+uploads/
