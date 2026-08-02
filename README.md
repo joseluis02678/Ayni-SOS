@@ -91,19 +91,27 @@ python -m http.server 5500
 
 Abrir http://127.0.0.1:5500/
 
-### Apps Flutter
+### Apps Flutter / APK Android
 
 ```bash
 # Requiere Flutter SDK
 cd apps/citizen_app
 flutter pub get
-flutter run --dart-define=API_BASE_URL=http://127.0.0.1:8000
+flutter run --dart-define=API_BASE_URL=http://TU_IP_LAN:8000
 
 cd ../rescuer_app
-flutter run --dart-define=API_BASE_URL=http://127.0.0.1:8000
+flutter run --dart-define=API_BASE_URL=http://TU_IP_LAN:8000
 ```
 
-Guía detallada: [docs/mobile_run.md](docs/mobile_run.md) · Arquitectura: [docs/architecture/](docs/architecture/)
+APKs firmados (tras `infra/scripts/build_android_apks.ps1`):
+- `dist/android/ayni-sos-citizen-release.apk`
+- `dist/android/ayni-sos-rescuer-release.apk`
+
+```bash
+adb install -r dist/android/ayni-sos-citizen-release.apk
+```
+
+La API debe escucharse en `--host 0.0.0.0` para el celular. Guía: [docs/mobile_run.md](docs/mobile_run.md) · Arquitectura: [docs/architecture/](docs/architecture/)
 
 ---
 

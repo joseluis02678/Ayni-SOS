@@ -16,7 +16,7 @@ Use your PC Wi‑Fi IP (example `172.37.1.24`), same network as the phone.
 
 ## Build signed release APKs
 ```powershell
-powershell -ExecutionPolicy Bypass -File infra/scripts/build_android_apks.ps1 -ApiBaseUrl http://172.37.1.24:8000
+powershell -ExecutionPolicy Bypass -File infra/scripts/build_android_apks.ps1 -ApiBaseUrl http://192.168.1.37:8000
 ```
 Outputs:
 - `dist/android/ayni-sos-citizen-release.apk`
@@ -33,7 +33,7 @@ adb install -r dist/android/ayni-sos-rescuer-release.apk
 $env:Path = "C:\FLUTTER\flutter\bin;$env:Path"
 flutter devices
 cd apps\citizen_app
-flutter run -d <device_id> --dart-define=API_BASE_URL=http://172.37.1.24:8000
+flutter run -d <device_id> --dart-define=API_BASE_URL=http://192.168.1.37:8000
 ```
 
 Emulator API host: `http://10.0.2.2:8000`

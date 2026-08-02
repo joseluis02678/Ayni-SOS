@@ -3,7 +3,7 @@
 #   powershell -ExecutionPolicy Bypass -File infra/scripts/build_android_apks.ps1 [-ApiBaseUrl http://172.37.1.24:8000]
 
 param(
-  [string]$ApiBaseUrl = "http://172.37.1.24:8000"
+  [string]$ApiBaseUrl = "http://192.168.1.37:8000"
 )
 
 $ErrorActionPreference = "Stop"
